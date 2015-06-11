@@ -9,9 +9,53 @@ function is_loggedin() {
     }
 }
 
+function session_expired() {
+    $session_duration = 2 * 60; // 2 minutes
+    $current_time = time();
+    if (isset($_SESSION['loggedtime']) && ($current_time - $_SESSION['loggedtime']) > $session_duration) {
+        session_destroy();
+        session_start();
+    }
+}
+
 // login management
-function login() {
-    // TODO
+function login($conn) {
+    // TODO -> check if the connection is at a db
+    if ($conn != null) {
+        $user = isset($_POST['username']) ? $_POST['username'] : '';
+        $pass = isset($_POST['password']) ? $_POST['password'] : '';
+
+        if ($user != '' && $pass != '') {
+            // protection against SQL injection -> TODO as to be improved??
+            $user = stripslashes($user);
+            $pass = stripslashes($pass);
+            $user = mysql_real_escape_string($user);
+            $pass = mysql_real_escape_string($pass);
+
+            // to change with an array
+            $where = "username='" . $user . "' AND password='" . $pass . "'";
+
+            $query = query('*', 'user', $where);
+            if ($query != null) {
+                $res = mysqli_query($conn, $query);
+                if ($res != false) {
+                    $count = mysqli_num_rows($res);
+                    if ($count == 1) {
+                        $_SESSION['username'] = $user;
+                        $_SESSION['password'] = $pass;
+                        // session is valid only for 2 minutes -> TODO doesn't work
+                        $_SESSION['loggedtime'] = time();
+
+                        $_SESSION['login'] = true;
+                    } else {
+                        // TODO -> do something??
+                    }
+                }
+
+                mysqli_free_result($res);
+            }
+        }
+    }
 }
 
 // logout management
@@ -21,9 +65,9 @@ function logout() {
 
 // insert bootstrap, jquery and other standard stuff
 function insert_header() {
-    echo "<link rel='stylesheet' href='bootstrap.min.css'>";
-    echo "<script type='text/javascript' src='jquery-2.1.4.min.js'></script>";
-    echo "<script type='text/javascript' src='bootstrap.min.js'></script>";
+    echo "<link rel='stylesheet' href='css/bootstrap.min.css'>";
+    echo "<script type='text/javascript' src='javascript/jquery-2.1.4.min.js'></script>";
+    echo "<script type='text/javascript' src='javascript/bootstrap.min.js'></script>";
     echo "<style type='text/css'>
         body {
             padding-top: 50px;
