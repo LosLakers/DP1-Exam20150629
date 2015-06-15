@@ -29,14 +29,16 @@ function passwordCheck() {
     var conf_pass = $('#conf_password');
     if (pass.val() !== conf_pass.val()) {
         var div = conf_pass.parent();
-        //div.class = 'form-group has-feedback has-error';
+        div.addClass('has-error');
+        div.removeClass('has-success');
         var span = div.children('span');
         span.addClass('glyphicon-remove');
         span.removeClass('glyphicon-ok');
         span.css('color', 'red');
     } else {
         var div = conf_pass.parent();
-        div.class = 'form-group has-feedback has-success';
+        div.addClass('has-success');
+        div.removeClass('has-error');
         var span = div.children('span');
         span.addClass('glyphicon-ok');
         span.removeClass('glyphicon-remove');
