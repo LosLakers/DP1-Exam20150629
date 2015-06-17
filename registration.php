@@ -61,68 +61,74 @@ if (isset($_POST['status']) && $_POST['status'] == 'registration') {
     <title>Registration</title>
 </head>
 <body>
-<div class="container">
-    <legend>Registration to the website</legend>
-    <p class="text-info">
-        In this page, you can register to the website in the order to have full access to
-        all the functionality of the website.
-    </p>
-</div>
-<br/>
-<!-- TODO -> manage error messages and translate it in php page to include -->
 <?php
-if ($error != null) {
+include 'header.php';
+?>
+<div>
+    <?php
+    include 'navigation_bar.php';
     ?>
-    <div class="container">
-        <div class="col-lg-4 col-md-4 alert alert-dismissable <?=get_message_type($error)?>">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
-            <p class="message"><?=get_message($error)?></p>
+    <div class="right-half">
+        <h3>Registration to the website</h3>
+
+        <p>
+            In this page, you can register to the website in the order to have full access to
+            all the functionality of the website.
+        </p>
+        <br/>
+        <!-- TODO -> manage error messages and translate it in php page to include -->
+        <?php
+        if ($error != null) {
+            ?>
+            <div class="container">
+                <p><?= get_message($error) ?></p>
+            </div>
+            <br/>
+        <?php
+        }
+        ?>
+        <div>
+            <form id="registration" name="registrationForm" method="post" action="registration.php">
+                <input type="hidden" name="status" value="registration"/>
+
+                <div>
+                    <label>Insert Username</label>
+                    <input type="text" name="username" placeholder="Username" required="required"/>
+                </div>
+                <br/>
+
+                <div>
+                    <label>Insert Password</label>
+                    <input id="password" type="password" name="password" placeholder="Password" required="required"/>
+                </div>
+                <br/>
+
+                <div>
+                    <label>Confirm Password</label>
+                    <input id="conf_password" type="password" name="conf_password" placeholder="Password"
+                           required="required"/>
+                </div>
+                <br/>
+
+                <div>
+                    <label>Insert Name</label>
+                    <input type="text" name="name" placeholder="Name"/>
+                </div>
+                <br/>
+
+                <div>
+                    <label>Insert Surname</label>
+                    <input type="text" name="surname" placeholder="Surname"/>
+                </div>
+
+                <br/>
+                <button type="submit">Confirm</button>
+                <a href="index.php">Go Home</a>
+                <br/>
+            </form>
         </div>
     </div>
-    <br/>
-<?php
-}
-?>
-<div class="container">
-    <form id="registration" class="col-lg-4 col-md-4" name="registrationForm" method="post" action="registration.php">
-        <input type="hidden" name="status" value="registration"/>
-
-        <div class="form-group">
-            <label class="control-label">Insert Username</label>
-            <input type="text" class="form-control" name="username" placeholder="Username" required="required"/>
-        </div>
-        <br/>
-
-        <div class="form-group">
-            <label class="control-label">Insert Password</label>
-            <input id="password" type="password" class="form-control" name="password" placeholder="Password" required="required"/>
-        </div>
-        <br/>
-
-        <div class="form-group has-feedback">
-            <label class="control-label">Confirm Password</label>
-            <input id="conf_password" type="password" class="form-control" name="conf_password" placeholder="Password"
-                   required="required"/>
-            <span class="glyphicon form-control-feedback"></span>
-        </div>
-        <br/>
-
-        <div class="form-group">
-            <label class="control-label">Insert Name</label>
-            <input type="text" class="form-control" name="name" placeholder="Name"/>
-        </div>
-        <br/>
-
-        <div class="form-group">
-            <label class="control-label">Insert Surname</label>
-            <input type="text" class="form-control" name="surname" placeholder="Surname"/>
-        </div>
-
-        <br/>
-        <button type="submit" class="btn btn-primary">Confirm</button>
-        <a href="index.php" class="btn btn-warning">Go Home</a>
-        <br/>
-    </form>
+</div>
 </body>
 <!-- load javascript files -->
 <script type="text/javascript" src="javascript/registration_val.js"></script>

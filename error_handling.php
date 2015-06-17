@@ -9,6 +9,7 @@ $error_messages = array(
     'SUCCESS_USER_INSERT' => 'User successfully inserted'
 );
 
+// TODO -> create css for errors
 $type_messages = array(
     'ERROR' => 'alert-danger',
     'SUCCESS' => 'alert-success'

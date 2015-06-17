@@ -25,8 +25,8 @@ function is_loggedin($conn)
 function session_expired()
 {
     $session_duration = 2 * 60; // 2 minutes
-    $current_time = time();
-    if (isset($_SESSION['loggedtime']))
+    if (isset($_SESSION['loggedtime'])) {
+        $current_time = time();
         if (($current_time - $_SESSION['loggedtime']) > $session_duration) {
             session_destroy();
             session_start();
@@ -36,7 +36,9 @@ function session_expired()
             $_SESSION['loggedtime'] = time();
             return false;
         }
-    return false;
+    } else {
+        return false;
+    }
 }
 
 // login management
@@ -88,41 +90,11 @@ function logout()
     session_start();
 }
 
-// insert bootstrap, jquery and other standard stuff
+// insert jquery and css
 function insert_head()
 {
-    echo "<link rel='stylesheet' href='css/bootstrap.min.css'>";
     echo "<script type='text/javascript' src='javascript/jquery-2.1.4.min.js'></script>";
-    echo "<script type='text/javascript' src='javascript/bootstrap.min.js'></script>";
-    echo "<style type='text/css'>
-        body {
-            padding-top: 50px;
-            padding-bottom: 20px;
-        }
-    </style>";
-    echo "<style type='text/css'>
-/* make sidebar nav vertical */
-@media (min-width: 768px) {
-  .sidebar-nav .navbar .navbar-collapse {
-    padding: 0;
-    max-height: none;
-  }
-  .sidebar-nav .navbar ul {
-    float: none;
-  }
-  .sidebar-nav .navbar ul:not {
-    display: block;
-  }
-  .sidebar-nav .navbar li {
-    float: none;
-    display: block;
-  }
-  .sidebar-nav .navbar li a {
-    padding-top: 12px;
-    padding-bottom: 12px;
-  }
-}
-</style>";
+    echo "<link href='css/css_file.css' rel='stylesheet' type='text/css'>";
 }
 
 // establish a connection to the db

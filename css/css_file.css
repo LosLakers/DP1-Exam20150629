@@ -1,0 +1,41 @@
+body {
+
+}
+
+div.header {
+    background: black;
+    color: white;
+    padding-left: 1em;
+    padding-bottom: 1em;
+    padding-top: 1em;
+}
+
+div.left-half {
+    position: absolute;
+    left: 10px;
+    width: 30%;
+}
+
+div.right-half {
+    position: absolute;
+    right: 0px;
+    width: 70%;
+}
+
+ul.nav {
+    list-style-type: none;
+}
+
+table {
+    width: 70%;
+    border-collapse: collapse;
+}
+
+table, tr, th, td {
+    border: 1px solid black;
+}
+
+th, td {
+    height: 30px;
+    text-align: center;
+}
