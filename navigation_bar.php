@@ -7,8 +7,9 @@
         <li>
             <a href="index.php">Index</a>
         </li>
+        <br/>
         <?php
-        if (!$islogged) {
+        if (!isset($_SESSION['logged_time'])) {
             ?>
             <li>
                 <a href="registration.php">Registration</a>

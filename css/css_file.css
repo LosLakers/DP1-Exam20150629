@@ -2,7 +2,7 @@ body {
 
 }
 
-div.header {
+header {
     background: black;
     color: white;
     padding-left: 1em;
@@ -13,13 +13,16 @@ div.header {
 div.left-half {
     position: absolute;
     left: 10px;
-    width: 30%;
+    width: 25%;
+    background: grey;
+    height: 100%;
 }
 
 div.right-half {
     position: absolute;
     right: 0px;
-    width: 70%;
+    width: 65%;
+    height: 100%;
 }
 
 ul.nav {
@@ -37,5 +40,17 @@ table, tr, th, td {
 
 th, td {
     height: 30px;
+    text-align: center;
+}
+
+.has-error {
+    color: red;
+}
+
+.has-success {
+    color: green;
+}
+
+.error-text {
     text-align: center;
 }

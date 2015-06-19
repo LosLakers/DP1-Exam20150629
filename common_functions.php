@@ -1,39 +1,39 @@
 <?php
-// check if a user is logged in
-function is_loggedin($conn)
-{
-    if (!isset($_SESSION['login'])) {
-        return false;
-    } else {
-        $where = "username='" . $_SESSION['username'] . "' AND password='" . $_SESSION['password'] . "'";
-        $query = sql_query_select("*", "user", $where, null);
-        if ($query != null) {
-            $res = mysqli_query($conn, $query);
-            if (mysqli_num_rows($res) == 1) {
-                mysqli_free_result($res);
-                return true;
-            } else {
-                mysqli_free_result($res);
-                return false;
-            }
-        } else {
-            return false;
+include 'common_variables.php';
+
+// used to check the validity of the user
+// confront a cookie set in the client with a data in the $_SESSION
+// used to avoid exchanging session cookie and guess another user
+function check_user_validity() {
+    if (isset($_COOKIE['user_cookie']) && isset($_SESSION['user_cookie'])) {
+        if (strcmp($_COOKIE['user_cookie'], $_SESSION['user_cookie']) != 0) {
+            session_destroy();
+            die();
         }
     }
 }
 
+// function to check if cookies are enabled or not
+function cookie_check() {
+    if (!isset($_SESSION['cookieEn'])) {
+        $_SESSION['cookieEn'] = true;
+        redirect_to("error_page.php");
+    }
+}
+
+// to check if the session is expired or not
 function session_expired()
 {
-    $session_duration = 2 * 60; // 2 minutes
-    if (isset($_SESSION['loggedtime'])) {
+    $session_duration = 5 * 60; // TODO -> change to 2 minutes
+    if (isset($_SESSION['logged_time'])) {
         $current_time = time();
-        if (($current_time - $_SESSION['loggedtime']) > $session_duration) {
+        if (($current_time - $_SESSION['logged_time']) > $session_duration) {
             session_destroy();
             session_start();
             return true;
         } else {
             // update session time
-            $_SESSION['loggedtime'] = time();
+            $_SESSION['logged_time'] = time();
             return false;
         }
     } else {
@@ -42,44 +42,31 @@ function session_expired()
 }
 
 // login management
-function login($conn)
+function login($conn, $username, $password)
 {
-    // TODO -> check if the connection is at a db
-    if ($conn != null) {
-        $user = isset($_POST['username']) ? $_POST['username'] : '';
-        $pass = isset($_POST['password']) ? $_POST['password'] : '';
+    if ($username != '' && $password != '') {
+        // protection against SQL injection
+        $username = sql_clean_up($username);
+        $password = sql_clean_up($password);
 
-        if ($user != '' && $pass != '') {
-            // protection against SQL injection
-            $user = sql_clean_up($user);
-            $pass = sql_clean_up($pass);
+        $where = "username='" . $username . "' AND password='" . $password . "'";
 
-            // to change with an array
-            $where = "username='" . $user . "' AND password='" . $pass . "'";
-
-            $query = sql_query_select('*', 'user', $where, null);
-            if ($query != null) {
-                $res = mysqli_query($conn, $query);
-                if ($res != false) {
-                    $count = mysqli_num_rows($res);
-                    if ($count == 1) {
-                        $_SESSION['username'] = $user;
-                        $_SESSION['password'] = $pass;
-                        $row = mysqli_fetch_array($res, MYSQLI_ASSOC);
-                        $_SESSION['name'] = $row['name'];
-                        $_SESSION['surname'] = $row['surname'];
-                        // session is valid only for 2 minutes
-                        $_SESSION['loggedtime'] = time();
-
-                        $_SESSION['login'] = true;
-                    } else {
-                        // TODO -> do something??
-                    }
-                }
-
-                mysqli_free_result($res);
+        $query = sql_query_select('*', 'user', $where, null);
+        if ($query != null) {
+            $res = mysqli_query($conn, $query);
+            if ($res != false && mysqli_num_rows($res) == 1) {
+                $_SESSION['username'] = $username;
+                $row = mysqli_fetch_array($res, MYSQLI_ASSOC);
+                $_SESSION['name'] = $row['name'];
+                $_SESSION['surname'] = $row['surname'];
+                // save session time of login
+                $_SESSION['logged_time'] = time();
+            } else {
+                // TODO -> do something??
             }
         }
+
+        mysqli_free_result($res);
     }
 }
 
@@ -87,7 +74,8 @@ function login($conn)
 function logout()
 {
     session_destroy();
-    session_start();
+    $redirect_url = "http://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+    redirect_to($redirect_url);
 }
 
 // insert jquery and css
@@ -97,19 +85,29 @@ function insert_head()
     echo "<link href='css/css_file.css' rel='stylesheet' type='text/css'>";
 }
 
+function redirect_to($page) {
+    header("Location: $page");
+    die();
+}
+
+// error page redirect
+function error_page_redirect($message) {
+    $_SESSION['error_message'] = $message;
+    $redirect = "error_page.php";
+    header("Location: $redirect");
+    die();
+}
+
 // establish a connection to the db
 function dbconnection()
 {
-    $user = "root";
-    $pass = "";
-    $db = "dp1_exam";
+    global $HOST;
+    global $USER;
+    global $PASSWORD;
+    global $DATABASE;
 
-    $conn = new mysqli("localhost", $user, $pass, $db);
-    if (mysqli_connect_errno()) {
-        return null;
-    } else {
-        return $conn;
-    }
+    $conn = new mysqli($HOST, $USER, $PASSWORD, $DATABASE);
+    return $conn;
 }
 
 // prepare a query on a single table
@@ -144,7 +142,7 @@ function sql_query_select($select, $from, $where, $order)
     }
 }
 
-// function to insert a value into a table
+// function to prepare a query to insert a value into a table
 function sql_query_insert($insert, $values)
 {
     if ($insert != null && $values != null) {
@@ -158,8 +156,9 @@ function sql_query_insert($insert, $values)
     }
 }
 
-// function to update a row into a table
-function sql_query_update($from, $values, $where) {
+// function to prepare a query to update a row into a table
+function sql_query_update($from, $values, $where)
+{
     if ($from != null && $values != null) {
         $query = "UPDATE ";
         $query .= $from;
@@ -172,6 +171,20 @@ function sql_query_update($from, $values, $where) {
         return $query;
     } else {
         return null;
+    }
+}
+
+// function to prepare a query to delete a row into a table
+function sql_query_delete($from, $where)
+{
+    if ($from != null && $where != null) {
+        $query = "DELETE FROM ";
+        $query .= $from;
+        $query .= " WHERE ";
+        $query .= $where;
+        return $query;
+    } else {
+        return false;
     }
 }
 

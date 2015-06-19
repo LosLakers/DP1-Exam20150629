@@ -4,15 +4,19 @@ $error_messages = array(
     // error messages
     'ERROR_USERNAME_SELECT' => 'Username already in use',
     'ERROR_USER_INSERT' => 'Error in inserting the user, try again later',
+    'ERROR CREATE RESERVATION' => 'Error in performing a reservation',
+    'ERROR DELETE RESERVATION' => 'An error occurred in deleting a reservation',
+    'ERROR JAVASCRIPT DISABLED' => 'This page needs Javascript to work properly',
 
     // success messages
-    'SUCCESS_USER_INSERT' => 'User successfully inserted'
+    'SUCCESS_USER_INSERT' => 'User successfully inserted',
+    'SUCCESS CREATE RESERVATION' => 'A reservation has been successfully created',
+    'SUCCESS_DELETE_RESERVATION' => 'One or more reservations have been successfully deleted'
 );
 
-// TODO -> create css for errors
 $type_messages = array(
-    'ERROR' => 'alert-danger',
-    'SUCCESS' => 'alert-success'
+    'ERROR' => 'has-error',
+    'SUCCESS' => 'has-success'
 );
 
 function get_message_type($error) {
@@ -34,11 +38,3 @@ function get_message($error) {
         return null;
     }
 }
-
-// class to manage error messages -> TODO
-class ErrorClass
-{
-    // const array available in PHP 5.6
-}
-
-?>

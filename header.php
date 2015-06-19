@@ -1,6 +1,6 @@
-<div class="header">
+<header>
     <?php
-    if (!$islogged) {
+    if (!isset($_SESSION['logged_time'])) {
         ?>
         <!-- User is not logged in -->
         <form action="index.php" method="post">
@@ -20,4 +20,4 @@
     <?php
     }
     ?>
-</div>
+</header>
