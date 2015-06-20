@@ -4,8 +4,11 @@ $error_messages = array(
     // error messages
     'ERROR_USERNAME_SELECT' => 'Username already in use',
     'ERROR_USER_INSERT' => 'Error in inserting the user, try again later',
+    'ERROR LOGIN' => 'Username and/or password are wrong, try again',
     'ERROR CREATE RESERVATION' => 'Error in performing a reservation',
     'ERROR DELETE RESERVATION' => 'An error occurred in deleting a reservation',
+    'ERROR RESERVATION PRESENT' => 'You already reserved places for this activity',
+    'ERROR RESERVATION TOO SPACES' => 'You are trying to reserve more places than the available ones',
     'ERROR JAVASCRIPT DISABLED' => 'This page needs Javascript to work properly',
 
     // success messages

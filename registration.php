@@ -2,7 +2,19 @@
 include 'common_functions.php';
 include 'error_handling.php';
 
+session_start();
+
+// HTTPS redirect
+if (!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] !== 'on') {
+    redirect_to("https://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+}
+
 cookie_check();
+
+// if the user is already logged in, a redirect him to his user page
+if (isset($_SESSION['logged_time'])) {
+    redirect_to("userpage.php");
+}
 
 if (isset($_POST['status']) && $_POST['status'] == 'registration') {
     $username = isset($_POST['username']) ? $_POST['username'] : "";

@@ -15,8 +15,8 @@ function check_user_validity() {
 
 // function to check if cookies are enabled or not
 function cookie_check() {
-    if (!isset($_SESSION['cookieEn'])) {
-        $_SESSION['cookieEn'] = true;
+    if (!isset($_SESSION['cookieEn']) && !isset($_COOKIE['cookie_enabled'])) {
+        $_SESSION['cookieEn'] = false;
         redirect_to("error_page.php");
     }
 }
@@ -24,7 +24,7 @@ function cookie_check() {
 // to check if the session is expired or not
 function session_expired()
 {
-    $session_duration = 5 * 60; // TODO -> change to 2 minutes
+    $session_duration = 2 * 60;
     if (isset($_SESSION['logged_time'])) {
         $current_time = time();
         if (($current_time - $_SESSION['logged_time']) > $session_duration) {
@@ -61,12 +61,13 @@ function login($conn, $username, $password)
                 $_SESSION['surname'] = $row['surname'];
                 // save session time of login
                 $_SESSION['logged_time'] = time();
+                mysqli_free_result($res);
+                return true;
             } else {
-                // TODO -> do something??
+                mysqli_free_result($res);
+                return false;
             }
         }
-
-        mysqli_free_result($res);
     }
 }
 
