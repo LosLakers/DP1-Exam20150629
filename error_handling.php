@@ -8,7 +8,7 @@ $error_messages = array(
     'ERROR CREATE RESERVATION' => 'Error in performing a reservation',
     'ERROR DELETE RESERVATION' => 'An error occurred in deleting a reservation',
     'ERROR RESERVATION PRESENT' => 'You already reserved places for this activity',
-    'ERROR RESERVATION TOO SPACES' => 'You are trying to reserve more places than the available ones',
+    'ERROR RESERVATION SPACES' => 'You are trying to reserve more places than the available ones',
     'ERROR JAVASCRIPT DISABLED' => 'This page needs Javascript to work properly',
 
     // success messages

@@ -144,7 +144,7 @@ include 'error_message.php';
                                             <select name="children" required="required">
                                                 <option value="0">0</option>
                                                 <?php
-                                                for ($i = 1; $i <= $children && $i <= $MAX_CHILDREN; $i++) {
+                                                for ($i = 1; $i <= $children && $i <= Common::get_max_children(); $i++) {
                                                     echo "<option value='$i'>$i</option>";
                                                 }
                                                 ?>
@@ -182,7 +182,7 @@ include 'error_message.php';
             <h4>Reservation rules</h4>
             <ul>
                 <li>Each reservation consists in a place for the user and 0, 1 or more places for the children</li>
-                <li>Actually, the maximum number of children can be <?= $MAX_CHILDREN ?></li>
+                <li>Actually, the maximum number of children can be <?= Common::get_max_children() ?></li>
                 <li>Is not possible to make more than one reservation for each activity</li>
             </ul>
         <?php
@@ -195,4 +195,6 @@ include 'error_message.php';
 // close db connection
 mysqli_close($conn);
 ?>
+<!-- load javascript files -->
+<script type="text/javascript" src="javascript/common.js"></script>
 </html>

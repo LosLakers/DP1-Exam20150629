@@ -30,6 +30,8 @@ if (isset($_POST['status']) && $_POST['status'] == 'registration') {
 
         $conn = dbconnection();
         if (!mysqli_connect_error()) {
+            mysqli_query($conn, "LOCK TABLES user WRITE");
+
             // check if the username is unique or not
             $select = "username";
             $from = "user";
@@ -41,7 +43,6 @@ if (isset($_POST['status']) && $_POST['status'] == 'registration') {
                     // the username is already in the db
                     $error = 'ERROR_USERNAME_SELECT';
                     mysqli_free_result($res);
-                    mysqli_close($conn);
                 } else {
                     mysqli_free_result($res);
                     mysqli_autocommit($conn, false);
@@ -52,16 +53,17 @@ if (isset($_POST['status']) && $_POST['status'] == 'registration') {
                         if ($query != null && !mysqli_query($conn, $query))
                             throw new Exception();
                         mysqli_commit($conn);
-                        mysqli_close($conn);
                         $error = 'SUCCESS_USER_INSERT';
                     } catch (Exception $e) {
                         // error in performing insert in the db
                         $error = 'ERROR_USER_INSERT';
                         mysqli_rollback($conn);
-                        mysqli_close($conn);
                     }
                 }
+                mysqli_query($conn, "UNLOCK TABLES");
+                mysqli_close($conn);
             } else {
+                mysqli_query($conn, "UNLOCK TABLES");
                 session_start();
                 // redirect to error page for database connection error
                 mysqli_close($conn);
@@ -161,4 +163,5 @@ include 'error_message.php'
 </body>
 <!-- load javascript files -->
 <script type="text/javascript" src="javascript/registration_val.js"></script>
+<script type="text/javascript" src="javascript/common.js"></script>
 </html>

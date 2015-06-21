@@ -15,8 +15,8 @@ function check_user_validity() {
 
 // function to check if cookies are enabled or not
 function cookie_check() {
-    if (!isset($_SESSION['cookieEn']) && !isset($_COOKIE['cookie_enabled'])) {
-        $_SESSION['cookieEn'] = false;
+    if (!isset($_SESSION['cookie_en']) && !isset($_COOKIE['cookie_enabled'])) {
+        $_SESSION['cookie_en'] = false;
         redirect_to("error_page.php");
     }
 }
@@ -102,12 +102,7 @@ function error_page_redirect($message) {
 // establish a connection to the db
 function dbconnection()
 {
-    global $HOST;
-    global $USER;
-    global $PASSWORD;
-    global $DATABASE;
-
-    $conn = new mysqli($HOST, $USER, $PASSWORD, $DATABASE);
+    $conn = Common::get_db_connection();
     return $conn;
 }
 
@@ -144,6 +139,8 @@ function sql_query_select($select, $from, $where, $order)
 }
 
 // function to prepare a query to insert a value into a table
+// insert must be in the form TABLE(KEY_1, .., KEY_N)
+// values must be in the form ('VALUE_1', .., 'VALUE_2')
 function sql_query_insert($insert, $values)
 {
     if ($insert != null && $values != null) {
@@ -158,6 +155,8 @@ function sql_query_insert($insert, $values)
 }
 
 // function to prepare a query to update a row into a table
+// values must be a single string in the format 'KEY_1='VALUE_1', KEY_2='VALUE_2' ...'
+// where must be a single string in the format 'KEY_1='VALUE_1' AND KEY_2='VALUE_2' ...'
 function sql_query_update($from, $values, $where)
 {
     if ($from != null && $values != null) {
@@ -176,6 +175,7 @@ function sql_query_update($from, $values, $where)
 }
 
 // function to prepare a query to delete a row into a table
+// where must be a single string in the format 'KEY_1='VALUE_1' AND KEY_2='VALUE_2' ...'
 function sql_query_delete($from, $where)
 {
     if ($from != null && $where != null) {

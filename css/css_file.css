@@ -45,10 +45,14 @@ th, td {
 
 .has-error {
     color: red;
+    border-color: red;
+    border-style: solid;
 }
 
 .has-success {
     color: green;
+    border-color: green;
+    border-style: solid;
 }
 
 .error-text {

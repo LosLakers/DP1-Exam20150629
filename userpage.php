@@ -35,7 +35,8 @@ if (isset($_SESSION['logged_time'])) {
                         $children = intval($_POST['children']);
                     }
 
-                    if ($activity > 0 && $children >= 0 && $children <= $MAX_CHILDREN) {
+                    mysqli_query($conn, "LOCK TABLES reservations WRITE, activities WRITE, children WRITE");
+                    if ($activity > 0 && $children >= 0 && $children <= Common::get_max_children()) {
                         $where = "username='" . $_SESSION['username'] . "' AND id_activity='" . $activity . "'";
                         $query = sql_query_select("*", "reservations", $where, null);
                         if ($query != null) {
@@ -57,7 +58,7 @@ if (isset($_SESSION['logged_time'])) {
 
                                                     // create the children and get their id
                                                     $children_array = array();
-                                                    for ($i = 1; $i <= $MAX_CHILDREN; $i++) {
+                                                    for ($i = 1; $i <= Common::get_max_children(); $i++) {
                                                         $children_array[$i] = 0;
                                                     }
                                                     for ($i = 1; $i <= $children; $i++) {
@@ -85,7 +86,7 @@ if (isset($_SESSION['logged_time'])) {
                                                     $error = 'ERROR CREATE RESERVATION';
                                                 }
                                             } else {
-                                                $error = 'ERROR RESERVATION TOO SPACES';
+                                                $error = 'ERROR RESERVATION SPACES';
                                             }
                                         } else {
                                             // redirect to error page because of db error
@@ -107,6 +108,7 @@ if (isset($_SESSION['logged_time'])) {
                         mysqli_close($conn);
                         error_page_redirect("I'm sorry, but you're trying something that is unauthorized");
                     }
+                    mysqli_query($conn, "UNLOCK TABLES");
                     break;
                 }
                 case 'delete' : {
@@ -132,6 +134,7 @@ if (isset($_SESSION['logged_time'])) {
 
                             // check if at each reservation corresponds the user that want to perform the delete
                             // and create an array with each reservation with the corresponding data needed
+                            mysqli_query($conn, "LOCK TABLES reservations WRITE, activities WRITE, children WRITE");
                             $where = "username='" . $_SESSION['username'] . "' AND id='" . $id_reserv . "'";
                             $query = sql_query_select("*", "reservations", $where, null);
                             if ($query != null) {
@@ -151,6 +154,7 @@ if (isset($_SESSION['logged_time'])) {
                                     mysqli_free_result($res);
                                     // database error
                                     mysqli_close($conn);
+                                    mysqli_query($conn, "UNLOCK TABLES");
                                     error_page_redirect("Database connection error - userpage.php line 131");
                                 }
                             }
@@ -199,8 +203,10 @@ if (isset($_SESSION['logged_time'])) {
                         } catch (Exception $e) {
                             mysqli_rollback($conn);
                             $error = $e->getMessage();
+                            mysqli_query($conn, "UNLOCK TABLES");
                         }
                     }
+                    mysqli_query($conn, "UNLOCK TABLES");
                     break;
                 }
             }
@@ -243,6 +249,11 @@ include 'error_message.php'
     include 'navigation_bar.php';
     ?>
     <div class="right-half">
+        <h3>Username</h3>
+
+        <p><?= $_SESSION['username'] ?></p>
+        <br/>
+
         <h3>Name</h3>
 
         <p><?= $_SESSION['name'] ?></p>
@@ -320,5 +331,7 @@ include 'error_message.php'
 mysqli_close($conn);
 ?>
 </body>
+<!-- load javascript files -->
 <script type="text/javascript" src="javascript/userpage.js"></script>
+<script type="text/javascript" src="javascript/common.js"></script>
 </html>

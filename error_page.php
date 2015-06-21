@@ -4,7 +4,7 @@ include 'common_functions.php';
 session_start();
 $error_message = isset($_SESSION['error_message']) ? $_SESSION['error_message'] : "Nothing";
 // to check if cookies are enabled
-if (isset($_SESSION['cookieEn'])) {
+if (isset($_SESSION['cookie_en'])) {
     if (strcmp($error_message, "Nothing") == 0)
         redirect_to("index.php");
 } else {
