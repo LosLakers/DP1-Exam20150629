@@ -264,6 +264,7 @@ include 'error_message.php'
         <p><?= $_SESSION['surname'] ?></p>
         <br/>
         <?php
+		mysqli_query($conn, "LOCK TABLES reservations READ, activities READ");
         $select = "reservations.id, name, id_child1, id_child2, id_child3";
         $from = "reservations JOIN activities ON reservations.id_activity=activities.id";
         $where = "username='" . $_SESSION['username'] . "'";
@@ -323,6 +324,7 @@ include 'error_message.php'
                 error_page_redirect("Error loading reserved activities");
             }
         }
+		mysqli_query($conn, "UNLOCK TABLES");
         ?>
     </div>
 </div>

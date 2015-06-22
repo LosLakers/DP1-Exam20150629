@@ -100,6 +100,7 @@ include 'error_message.php';
             <?php
             if (isset($_SESSION['logged_time'])) {
                 // get all reservations already performed
+				mysqli_query($conn, "LOCK TABLES reservations READ, activities READ");
                 $where = "username='" . $_SESSION['username'] . "'";
                 $query = sql_query_select('id_activity', 'reservations', $where, null);
                 $reservations = array(
@@ -172,6 +173,7 @@ include 'error_message.php';
                     error_page_redirect("Error in loading the activities, please contact the administrator");
                 }
             }
+			mysqli_query($conn, "UNLOCK TABLES");
             ?>
             </tbody>
         </table>

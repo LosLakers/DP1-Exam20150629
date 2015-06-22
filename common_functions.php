@@ -195,7 +195,8 @@ function sql_clean_up($variable)
     $variable = strip_tags($variable);
     $variable = htmlentities($variable);
     $variable = stripslashes($variable);
-    $variable = mysql_real_escape_string($variable);
+	// doesn't work on university site
+    //$variable = mysql_real_escape_string($variable);
 
     return $variable;
 }
